@@ -1,16 +1,27 @@
 package com.Ecotrack.ApiGateway;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.Ecotrack.ApiGateway.Models.User;
 import com.Ecotrack.ApiGateway.filter.JwtUtils;
 import com.Ecotrack.ApiGateway.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -23,10 +34,25 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
+    
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
+    public AuthController(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         List<User> users = userService.findByEmail(user.email);
-        if (!users.isEmpty() && users.get(0).password.equals(user.password)) {
+        logger.info("Auth success" + user.password + ' ' + users.get(0).password);
+        if (!users.isEmpty() && passwordEncoder.matches(user.password, users.get(0).password))
+        // users.get(0).password.equals(user.password))
+         {
+
             String token = jwtUtils.generateToken(user.email);
             return ResponseEntity.ok(Collections.singletonMap("token", token));
         }
@@ -36,6 +62,8 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
         if (userService.findByEmail(user.email).isEmpty()) {
+           
+            user.password = passwordEncoder.encode(user.password);
             userService.save(user);
             String token = jwtUtils.generateToken(user.email);
             return ResponseEntity.ok(Collections.singletonMap("token", token));

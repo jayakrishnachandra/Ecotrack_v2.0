@@ -1,17 +1,12 @@
 package com.Ecotrack.IotService.Services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.Ecotrack.IotService.Models.Usage;
 import com.Ecotrack.IotService.Repositories.UsageRepository;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.Ecotrack.common.models.Usage;
 
 @Service
 public class UsageService {

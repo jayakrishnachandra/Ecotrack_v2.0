@@ -1,4 +1,4 @@
-package com.Ecotrack.IotService.Models;
+package com.Ecotrack.common.models;
 import java.io.Serializable;
 
 
@@ -6,6 +6,10 @@ public class KafkaUsageEntity implements Serializable {
    private String email;
     private double waterUsage;
     private double electricityUsage;
+
+
+    public KafkaUsageEntity() {
+    }
 
     public String getEmail() {
         return email;
@@ -36,5 +40,11 @@ public class KafkaUsageEntity implements Serializable {
         this.email = usage.getEmail();
         this.waterUsage = usage.getWaterUsage();
         this.electricityUsage = usage.getElectricityUsage();
+    }
+    
+    @Override
+    public String toString()
+    {
+        return " " + this.getEmail() + " " + this.getWaterUsage() + " " + this.getElectricityUsage();
     }
 }

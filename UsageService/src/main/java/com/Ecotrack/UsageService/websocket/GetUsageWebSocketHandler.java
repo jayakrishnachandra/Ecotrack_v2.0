@@ -21,8 +21,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.Ecotrack.UsageService.Service.Models.KafkaUsageEntity;
 import com.Ecotrack.UsageService.Services.UsageService;
+import com.Ecotrack.common.models.KafkaUsageEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -118,31 +118,55 @@ public GetUsageWebSocketHandler(UsageService usageService) {
     }
 
 
-//     @KafkaListener(topics = "quickstart-events", groupId = "usage_group")
-// public void consumeRawMessage(String message) {
-//     System.out.println("Received RAW Kafka Message: " + message);
-// }
-
-
-    @KafkaListener(topics = "quickstart-events", groupId = "usage_group")
+    @KafkaListener(topics = "quickstart", groupId = "usage_group")
 public void consumeUsage(KafkaUsageEntity usage) {
-    try {
-        String email = usage.getEmail();
+    // try {
+    //     logger.info("Deserialized Kafka message: {}", usage.toString());
+    // } catch (Exception e) {
+    //     logger.error("Error processing Kafka message: {}", e.getMessage(), e);
+    // }
 
-        // Fetch the WebSocket session
-        WebSocketSession session = userSessions.get(email);
-        System.out.println("Received Usage: " + usage);
-        if (session != null && session.isOpen()) {
-            String message = objectMapper.writeValueAsString(usage);
-            session.sendMessage(new TextMessage(message));
-            logger.debug("Usage data sent successfully for email: {}", email);
-        } else {
-            logger.warn("No active WebSocket session found for email: {}", email);
-        }
-    } catch (Exception e) {
-        logger.error("Error processing Kafka message: {}", e.getMessage());
-    }
+    try {
+                String email = usage.getEmail();
+        
+                // Fetch the WebSocket session
+                WebSocketSession session = userSessions.get(email);
+                System.out.println("Received Usage: " + usage.toString());
+                if (session != null && session.isOpen()) {
+                    String message = objectMapper.writeValueAsString(usage);
+                    logger.info(message);
+                    session.sendMessage(new TextMessage(message));
+                    logger.debug("Usage data sent successfully for email: {}", email);
+                } else {
+                    logger.warn("No active WebSocket session found for email: {}", email);
+                }
+            } catch (Exception e) {
+                logger.error("Error processing Kafka message: {}", e.getMessage());
+            }
 }
+
+    
+
+
+//     @KafkaListener(topics = "quickstart", groupId = "usage_group")
+// public void consumeUsage(KafkaUsageEntity usage) {
+//     try {
+//         String email = usage.getEmail();
+
+//         // Fetch the WebSocket session
+//         WebSocketSession session = userSessions.get(email);
+//         System.out.println("Received Usage: " + usage);
+//         if (session != null && session.isOpen()) {
+//             String message = objectMapper.writeValueAsString(usage);
+//             session.sendMessage(new TextMessage(message));
+//             logger.debug("Usage data sent successfully for email: {}", email);
+//         } else {
+//             logger.warn("No active WebSocket session found for email: {}", email);
+//         }
+//     } catch (Exception e) {
+//         logger.error("Error processing Kafka message: {}", e.getMessage());
+//     }
+// }
 
 
     @Override

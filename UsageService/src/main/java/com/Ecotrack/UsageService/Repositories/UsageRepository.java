@@ -1,14 +1,14 @@
 package com.Ecotrack.UsageService.Repositories;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import com.Ecotrack.UsageService.Models.Usage;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import com.Ecotrack.common.models.Usage;
 
 @Repository
 public interface UsageRepository extends MongoRepository<Usage, String> {

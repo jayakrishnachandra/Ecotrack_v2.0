@@ -21,10 +21,10 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.Ecotrack.IotService.Models.KafkaUsageEntity;
-import com.Ecotrack.IotService.Models.Usage;
 import com.Ecotrack.IotService.Services.UsageService;
 import com.Ecotrack.IotService.kafka.KafkaMessagePublisher;
+import com.Ecotrack.common.models.KafkaUsageEntity;
+import com.Ecotrack.common.models.Usage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
